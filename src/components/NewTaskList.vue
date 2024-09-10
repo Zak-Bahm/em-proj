@@ -1,11 +1,11 @@
 <template>
-    <div class="card text-bg-info text-light">
-        <div class="card-header">
+    <div class="card bg-primary-subtle">
+        <div class="card-header bg-primary text-light">
             <h3 class="card-title m-0">Inbox</h3>
         </div>
         <div class="card-body">
             <ul class="list-group list-group-flush">
-            <li v-for="task in tasks" :key="task.id" class="list-group-item text-bg-info text-light">
+            <li v-for="task in tasks" :key="task.id" class="list-group-item bg-primary-subtle text-primary-emphasis">
                 {{ task }}
             </li>
         </ul>
