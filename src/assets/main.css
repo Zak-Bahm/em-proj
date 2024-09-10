@@ -4,3 +4,6 @@
 .short-card-max {
     max-height: 38vh;
 }
+.icon-link:hover {
+    transform: scale(1.1)
+}
