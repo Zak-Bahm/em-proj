@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <nav class="navbar navbar-expand-lg bd-navbar sticky-top bg-primary mt-3 rounded-start rounded-end" data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg bd-navbar sticky-top bg-primary mt-3 rounded-start rounded-end border border-light border-3" data-bs-theme="dark">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1">Eisenhower Matrix</span>
 
@@ -24,4 +24,5 @@
     <RouterView />
 </template>
 
-<style scoped></style>
+<style>
+</style>
