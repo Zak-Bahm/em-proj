@@ -3,7 +3,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Task</h5>
+                    <h5 class="modal-title">Create/Edit Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -26,13 +26,13 @@
                             </select>
                             <div class="row mt-3">
                                 <div class="col-6" v-for="(label, index) in fullOptions" :key="index" >
-                                    <div class="alert" :class="`alert-${colorOptions[index]}`" role="alert">
+                                    <div class="alert" :class="`alert-${colorOptions[index]}`" role="alert" @click="() => setCategory(index)">
                                         {{ label }}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-primary" @click="saveTask">Save changes</button>
                     </form>
                 </div>
             </div>
@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-    import { ref } from 'vue'
+    import { saveLocalTask } from '@/methods/tasks';
 
     const catOptions = ['ImportantUrgent', 'ImportantNotUrgent', 'NotImportantUrgent', 'NotImportantNotUrgent'];
     const fullOptions = ['Urgent + Important', 'Not Urgent + Important', 'Urgent + Not Important', 'Not Urgent + Not Important']
@@ -49,10 +49,43 @@
 
 
     const props = defineProps({
-        modalId: String
+        modalId: String,
+        targetTask: Object
     })
 
+    const id = defineModel('id');
     const title = defineModel('title');
     const desc = defineModel('desc');
     const cat = defineModel('cat');
+
+    function setCategory(ind) {
+        cat.value = catOptions[ind];
+    }
+
+    function saveTask(event) {
+        //event.preventDefault();
+        console.log('Saving')
+
+        // save the task data
+        const fullTask = {
+            id: id.value || Date.now(),
+            createdAt: props.targetTask.createdAt || Date.now(),
+            updatedAt: Date.now(),
+            title: title.value,
+            description: desc.value,
+            category: cat.value
+        }
+        console.log(fullTask)
+        saveLocalTask(fullTask);
+
+        // hide modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById(props.modalId));
+        modal.hide();
+    }
 </script>
+
+<style scoped>
+    .alert {
+        cursor: pointer;
+    }
+</style>
