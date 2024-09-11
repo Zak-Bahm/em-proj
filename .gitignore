@@ -37,3 +37,6 @@ docs/build/*
 
 # virtual env
 .venv/*
+
+#.env files
+.env
