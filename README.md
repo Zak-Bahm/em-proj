@@ -176,6 +176,7 @@ Below are team-identified core features, expressed as a preliminary list of API 
    ```
 3. Start the back-end api server
    ```
+   export DATABASE_URL="mongodb-url" # specify the location of your mongodb server
    npm run backend    # start the mongodb server
    ```
 
