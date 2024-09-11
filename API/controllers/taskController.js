@@ -48,7 +48,7 @@ exports.createTask = async (req, res) => {
   //Create a new task. Requires user id and title.
   try {
     const newTask = await Task.create({
-      user_id: req.body.user_id,
+      userId: req.body.userId,
       title: req.body.title,
       category: req.body.category,
       description: req.body.description,
