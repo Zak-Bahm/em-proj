@@ -79,6 +79,9 @@ Below are team-identified core features, expressed as a preliminary list of API 
 
 ### Home Page
 
+![image](https://github.com/user-attachments/assets/5f3f6275-22d9-4558-832d-001d9c82a05e)
+
+
 **Purpose**: Main dashboard where users can view tasks and access other parts of the app.
 
 **Function**: Users can add new tasks. Clicking an existing task opens a modal to allow task edits.
@@ -93,6 +96,9 @@ Below are team-identified core features, expressed as a preliminary list of API 
 
 ### Uncategorized Task List
 
+![image](https://github.com/user-attachments/assets/35e9f067-1ac7-48db-9414-c56e0a467a8e)
+
+
 **Purpose**: Allows users to view and categorize all tasks
 
 **Function**: Clicking the task creation button opens the Task Form. Clicking on an existing task opens a modal to allow task edits.
@@ -106,6 +112,9 @@ Below are team-identified core features, expressed as a preliminary list of API 
 ---
 
 ### Categorized Task List
+
+![image](https://github.com/user-attachments/assets/76282d2e-e8c7-45f3-901a-6488a3e81d02)
+
 
 **Purpose**: Allows users to view all categorized tasks and mark them complete.
 
