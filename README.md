@@ -165,8 +165,17 @@ Below are team-identified core features, expressed as a preliminary list of API 
    source .venv/bin/activate       # activate docs env
    pip install -r requirements.txt # install docs requirements
    ```
+3. Start the back-end api server
+   ```
+   npm run backend    # start the mongodb server
+   ```
 
-3. Build/view the technical docs
+4. Start the front-end dev server
+    ```
+    npm run dev       # start the local dev server at http://localhost:5173/
+    ```
+
+5. Build/view the technical docs
 
    ```
    cd docs             # cd into docs dir
