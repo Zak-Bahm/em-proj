@@ -81,6 +81,9 @@ Below are team-identified core features, expressed as a preliminary list of API 
 
 ![image](https://github.com/user-attachments/assets/5f3f6275-22d9-4558-832d-001d9c82a05e)
 
+![image](https://github.com/user-attachments/assets/ce0bffe7-6732-47e5-8b6b-deaaa030ecf1)
+
+
 
 **Purpose**: Main dashboard where users can view tasks and access other parts of the app.
 
