@@ -187,8 +187,12 @@ Below are team-identified core features, expressed as a preliminary list of API 
     ```
     npm run dev       # start the local dev server at http://localhost:5173/
     ```
+5. Run the unit tests
+   ```
+   npm run test:unit  # starts the unit tests, must have the backend running
+   ```
 
-5. Build/view the technical docs
+6. Build/view the technical docs
 
    ```
    cd docs             # cd into docs dir
