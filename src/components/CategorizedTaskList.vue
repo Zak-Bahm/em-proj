@@ -21,9 +21,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import TaskModal from './TaskModal.vue';
 import { getLocalTasks, saveLocalTask } from '@/methods/tasks';
+
+const props = defineProps({
+    category: String,
+    colorClass: String,
+    pageView: Boolean
+})
 
 const catOptions = {
     'Urgent + Important': 'ImportantUrgent',
@@ -31,22 +37,32 @@ const catOptions = {
     'Urgent + Not Important': 'NotImportantUrgent',
     'Not Urgent + Not Important': 'NotImportantNotUrgent'
 };
-
-const props = defineProps({
-    category: String,
-    colorClass: String
-})
+const currentOpt = catOptions[props.category];
 
 const tasks = ref([])
 const targetTask = ref({})
 
-
 onMounted(() => {
     fetchTasks();
+
+    // Add event listener to all modals
+    const modalElements = document.querySelectorAll('.modal');
+    modalElements.forEach(modalElement => {
+        modalElement.addEventListener('hide.bs.modal', () => fetchTasks());
+    });
+});
+
+onUnmounted(() => {
+    // Remove event listener from all modals
+    const modalElements = document.querySelectorAll('.modal');
+    modalElements.forEach(modalElement => {
+        modalElement.removeEventListener('hide.bs.modal', () => fetchTasks());
+    });
 });
 
 function fetchTasks() {
-    const newTasks = getLocalTasks(catOptions[props.category]);
+    console.log("Fetching! for " + currentOpt)
+    const newTasks = getLocalTasks(currentOpt);
     tasks.value = newTasks;
 }
 function editTask(task) {
@@ -58,8 +74,6 @@ function editTask(task) {
     const modalElement = document.getElementById(`${props.category}TaskListModal`);
     const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
     modal.show();
-
-    modalElement.addEventListener('hide.bs.modal', () => fetchTasks());
 }
 </script>
 

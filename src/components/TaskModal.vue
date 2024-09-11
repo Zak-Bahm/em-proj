@@ -47,7 +47,6 @@
     const fullOptions = ['Urgent + Important', 'Not Urgent + Important', 'Urgent + Not Important', 'Not Urgent + Not Important']
     const colorOptions = ['danger', 'warning', 'info', 'dark']
 
-
     const props = defineProps({
         modalId: String,
         targetTask: Object
@@ -63,9 +62,6 @@
     }
 
     function saveTask(event) {
-        //event.preventDefault();
-        console.log('Saving')
-
         // save the task data
         const fullTask = {
             id: id.value || Date.now(),
@@ -75,7 +71,6 @@
             description: desc.value,
             category: cat.value
         }
-        console.log(fullTask)
         saveLocalTask(fullTask);
 
         // hide modal

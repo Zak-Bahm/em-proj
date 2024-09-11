@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue'
+    import { ref, onMounted, onUnmounted } from 'vue'
     import TaskModal from './TaskModal.vue';
     import { getLocalTasks, saveLocalTask } from '@/methods/tasks';
 
@@ -53,6 +53,20 @@
 
     onMounted(() => {
         fetchTasks();
+
+        // Add event listener to all modals
+        const modalElements = document.querySelectorAll('.modal');
+        modalElements.forEach(modalElement => {
+            modalElement.addEventListener('hide.bs.modal', () => fetchTasks());
+        });
+    });
+
+    onUnmounted(() => {
+        // Remove event listener from all modals
+        const modalElements = document.querySelectorAll('.modal');
+        modalElements.forEach(modalElement => {
+            modalElement.removeEventListener('hide.bs.modal', () => fetchTasks());
+        });
     });
 
     function fetchTasks() {
@@ -84,8 +98,6 @@
         const modalElement = document.getElementById('newTaskListModal');
         const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
         modal.show();
-
-        modalElement.addEventListener('hide.bs.modal', () => fetchTasks());
     }
 </script>
 
