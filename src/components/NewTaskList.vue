@@ -24,10 +24,15 @@
         <div class="card-body overflow-hidden">
             <ul class="list-group list-group-flush">
                 <li v-for="(task, index) in pageView ? tasks : tasks.slice(0, 17)" :key="index" class="list-group-item bg-primary-subtle text-primary-emphasis">
-                    <a class="text-decoration-none d-flex justify-content-between align-items-center" href="#" @click="editTask(task)">
-                        {{ task.title }}
-                        <i class="bi bi-pencil-square fs-5"></i>
-                    </a>
+                    <div class="row" >
+                        <span class="col-10">{{ task.title }}</span>
+                        <div class="col-1">
+                            <i class="bi bi-pencil-square fs-5" @click="editTask(task)"></i>
+                        </div>
+                        <div class="col-1">
+                            <i class="bi bi-trash-fill fs-5" @click="deleteTask(index)"></i>
+                        </div>
+                    </div>
                 </li>
                 <li v-if="tasks.length == 0" class="list-group-item bg-primary-subtle text-primary-emphasis">
                     You have no pending tasks
@@ -41,7 +46,7 @@
 <script setup>
     import { ref, onMounted, onUnmounted } from 'vue'
     import TaskModal from './TaskModal.vue';
-    import { getLocalTasks, saveLocalTask } from '@/methods/tasks';
+    import { getLocalTasks, saveLocalTask, deleteLocalTask } from '@/methods/tasks';
 
     const props = defineProps({
         pageView: Boolean
@@ -99,8 +104,19 @@
         const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
         modal.show();
     }
+    function deleteTask(ind) {
+        if (typeof ind === 'undefined') return;
+
+        // remove from localstorage then ref
+        const taskList = tasks.value;
+        deleteLocalTask(taskList[ind]);
+        taskList.splice(ind, 1);
+        tasks.value = taskList;
+    }
 </script>
 
-<style>
-/* Add any custom styles here */
+<style scoped>
+    .bi {
+        cursor: pointer;
+    }
 </style>

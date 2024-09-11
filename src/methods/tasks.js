@@ -32,5 +32,12 @@ function saveLocalTask(task) {
         console.error("Task object is invalid or missing an id.");
     }
 }
+function deleteLocalTask(task) {
+    if (task && task.id) {
+        localStorage.removeItem(`task-${task.id}`);
+    } else {
+        console.error("Task object is invalid or missing an id.");
+    }
+}
 
-export { getLocalTasks, saveLocalTask }
+export { getLocalTasks, saveLocalTask, deleteLocalTask }
