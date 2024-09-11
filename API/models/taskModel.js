@@ -51,6 +51,7 @@ taskSchema.pre('save', function (next) {
   next()
 })
 
-const Task = mongoose.model('Task', taskSchema)
+// Check if the model has already been compiled
+const Task = mongoose.models.Task || mongoose.model('Task', taskSchema);
 
 module.exports = Task
