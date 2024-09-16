@@ -33,6 +33,7 @@ exports.signUp = async (req, res) => {
 exports.logIn = async (req, res) => {
   try {
     //This will handle login functionality. Functionality not complete
+
     const { email, password } = req.body
 
     if (!email || !password) {
@@ -96,17 +97,20 @@ exports.getUserById = async (req, res) => {
 exports.updateUserById = async (req, res) => {
   try {
     //find users and update. Functionality not complete
-    const user = await User.findByIdAndUpdate(req.params, req.body, {})
+    const user = await User.findByIdAndUpdate(req.params.id, req.body)
     if (!user) {
       return res.status(404).json({
         status: 'fail',
         message: 'User not found'
       })
     }
+    //Send find updated user
+    const updatedUser = await User.findById(req.params.id)
+
     res.status(200).json({
       status: 'success',
       data: {
-        user
+        updatedUser
       }
     })
   } catch (err) {

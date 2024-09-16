@@ -1,6 +1,6 @@
 const Task = require('../models/taskModel')
 
-// Get all tasks
+// Get all tasks DEVELOPMENT ONLY
 exports.getAllTasks = async (req, res) => {
   try {
     const tasks = await Task.find()
