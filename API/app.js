@@ -1,13 +1,16 @@
-require('dotenv').config()
-const express = require('express')
-const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
+import express from 'express'
+import process from 'process'
+import mongoose from 'mongoose'
+import bodyParser from 'body-parser'
+import { taskRoutes } from './routes/taskRoutes.js'
+import { userRoutes } from './routes/userRoutes.js'
 
-const app = express()
+var app = express()
 const port = 3000
 
 // MongoDB connection
 const dbURI = process.env.DATABASE_URL
+
 //Connecting to MongoDB
 mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -16,12 +19,12 @@ mongoose
 
 // Middleware
 app.use(bodyParser.json())
-app.use('/api/tasks', require('./routes/taskRoutes.js'))
-app.use('/api/users', require('./routes/userRoutes.js'))
+app.use('/api/tasks', taskRoutes)
+app.use('/api/users', userRoutes)
 
 // Basic Route
 app.get('/', (req, res) => {
-  console.log('Request Recieved')
+  console.log(`Request url: ${req.url}`)
   res.send('Welcome to the API!')
 })
 
