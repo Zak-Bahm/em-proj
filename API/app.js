@@ -1,3 +1,4 @@
+import { config } from 'dotenv'
 import express from 'express'
 import process from 'process'
 import mongoose from 'mongoose'
@@ -5,6 +6,7 @@ import bodyParser from 'body-parser'
 import { taskRoutes } from './routes/taskRoutes.js'
 import { userRoutes } from './routes/userRoutes.js'
 
+config()
 var app = express()
 const port = 3000
 
