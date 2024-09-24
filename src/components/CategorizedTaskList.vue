@@ -78,7 +78,6 @@ onUnmounted(() => {
 });
 
 function fetchTasks() {
-    console.log("Fetching! for " + currentOpt)
     const newTasks = getLocalTasks(currentOpt);
     tasks.value = newTasks;
 }
