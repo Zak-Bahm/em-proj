@@ -17,8 +17,10 @@ async function getRemoteTasks(category = 'None') {
         }
 
         const data = await response.json();
-        console.log(data)
-        const tasks = data["data"]["tasks"];
+        const tasks = data["data"]["tasks"].map(t => {
+            t.id = t['_id'];
+            return t;
+        });
         return tasks;
     } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -63,6 +65,32 @@ async function saveRemoteTask(task) {
     }
 }
 
+async function deleteRemoteTask(task) {
+    // ensure we are logged in
+    if (!isLoggedIn()) return false
+
+    // ensure we have an id
+    if (typeof task.id == 'undefined') return false
+
+    // assemble url delete task
+    const url = import.meta.env.VITE_API_URL + '/tasks/' + task.id;
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            console.error('Error deleting task:', response.error);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error deleting task:', error);
+        return false;
+    }
+}
+
 function getLocalTasks(category = 'None') {
     const tasks = [];
     for (let i = 0; i < localStorage.length; i++) {
@@ -102,9 +130,11 @@ function saveLocalTask(task) {
 function deleteLocalTask(task) {
     if (task && task.id) {
         localStorage.removeItem(`task-${task.id}`);
+        return true;
     } else {
         console.error("Task object is invalid or missing an id.");
+        return false;
     }
 }
 
-export { getRemoteTasks, saveRemoteTask, getLocalTasks, saveLocalTask, deleteLocalTask }
+export { getRemoteTasks, saveRemoteTask, deleteRemoteTask, getLocalTasks, saveLocalTask, deleteLocalTask }

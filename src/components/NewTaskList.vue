@@ -30,7 +30,7 @@
                             <i class="bi bi-pencil-square fs-5" @click="editTask(task)"></i>
                         </div>
                         <div class="col-1">
-                            <i class="bi bi-trash-fill fs-5" @click="deleteTask(index)"></i>
+                            <i class="bi bi-trash-fill fs-5" @click="async () => { await deleteTask(index) }"></i>
                         </div>
                     </div>
                 </li>
@@ -46,7 +46,7 @@
 <script setup>
     import { ref, onMounted, onUnmounted } from 'vue'
     import TaskModal from './TaskModal.vue';
-    import { getLocalTasks, getRemoteTasks, saveLocalTask, saveRemoteTask, deleteLocalTask } from '@/methods/tasks';
+    import { getLocalTasks, getRemoteTasks, saveLocalTask, saveRemoteTask, deleteLocalTask, deleteRemoteTask } from '@/methods/tasks';
     import { useRouter } from 'vue-router'
 
     const lcl = import.meta.env.VITE_LOCAL_ONLY === "true"
@@ -65,7 +65,7 @@
         // Add event listener to all modals
         const modalElements = document.querySelectorAll('.modal');
         modalElements.forEach(modalElement => {
-            modalElement.addEventListener('hide.bs.modal', () => fetchTasks());
+            modalElement.addEventListener('hide.bs.modal', async () => await fetchTasks());
         });
     });
 
@@ -73,7 +73,7 @@
         // Remove event listener from all modals
         const modalElements = document.querySelectorAll('.modal');
         modalElements.forEach(modalElement => {
-            modalElement.removeEventListener('hide.bs.modal', () => fetchTasks());
+            modalElement.removeEventListener('hide.bs.modal', async () => await fetchTasks());
         });
     });
 
@@ -109,12 +109,15 @@
         const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
         modal.show();
     }
-    function deleteTask(ind) {
+    async function deleteTask(ind) {
         if (typeof ind === 'undefined') return;
 
         // remove from localstorage then ref
         const taskList = tasks.value;
-        deleteLocalTask(taskList[ind]);
+        const task = taskList[ind];
+        const deleted = lcl ? deleteLocalTask(task) : await deleteRemoteTask(task);
+        if (!deleted) return alert('Unable to delete task');
+
         taskList.splice(ind, 1);
         tasks.value = taskList;
     }
