@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import { taskRoutes } from './routes/taskRoutes.js'
 import { userRoutes } from './routes/userRoutes.js'
+import cors from 'cors';
 
 config()
 var app = express()
@@ -20,6 +21,7 @@ mongoose
   .catch((err) => console.log('MongoDB connection error:', err))
 
 // Middleware
+app.use(cors());
 app.use(bodyParser.json())
 app.use('/api/tasks', taskRoutes)
 app.use('/api/users', userRoutes)
