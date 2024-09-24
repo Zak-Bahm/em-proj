@@ -1,10 +1,10 @@
 <script setup>
     import { useRouter, RouterView } from 'vue-router'
     import { ref, onMounted, onUnmounted } from 'vue'
-    import { getCurrentUser, logoutUser  } from './methods/users';
+    import { isLoggedIn, logoutUser  } from './methods/users';
 
     const router = useRouter();
-    const isLoggedIn = ref(false)
+    const userPresent = ref(false)
 
     onMounted(() => {
         checkForUser();
@@ -12,15 +12,14 @@
 
     // ensure we are logged in and redirect if not
     function checkForUser() {
-        const user = getCurrentUser();
-        if (user === false) return router.push('/login')
+        if (!isLoggedIn()) return router.push('/login')
 
-        isLoggedIn.value = true
+        userPresent.value = true
     }
 </script>
 
 <template>
-    <nav v-if="isLoggedIn" class="navbar navbar-expand-lg bd-navbar sticky-top bg-primary mt-3 rounded-start rounded-end border border-light border-3" data-bs-theme="dark">
+    <nav v-if="userPresent" class="navbar navbar-expand-lg bd-navbar sticky-top bg-primary mt-3 rounded-start rounded-end border border-light border-3" data-bs-theme="dark">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1">Eisenhower Matrix</span>
 

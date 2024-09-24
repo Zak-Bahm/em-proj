@@ -1,3 +1,12 @@
+function isLoggedIn() {
+    // always true for local
+    if (import.meta.env.VITE_LOCAL_ONLY === "true") return true
+
+    // try to get user otherwise
+    const id = getCurrentUser(true);
+    return typeof id !== 'undefined' && id !== false && id.length > 0
+}
+
 function getCurrentUser(idOnly = false) {
     // start by getting user json if available
     const userJson = localStorage.getItem('em-user');
@@ -33,7 +42,8 @@ async function loginUser(email, password) {
             return false;
         }
 
-        const user = await response.json();
+        const data = await response.json();
+        const user = data["data"]["user"];
         localStorage.setItem('em-user', JSON.stringify(user));
         return true;
     } catch (error) {
@@ -44,7 +54,7 @@ async function loginUser(email, password) {
 
 function logoutUser() {
     localStorage.removeItem('em-user');
-    return window.location = '/'
+    return window.location = '/login'
 }
 
 async function signUpUser(username, email, password) {
@@ -68,7 +78,8 @@ async function signUpUser(username, email, password) {
             return false;
         }
 
-        const user = await response.json();
+        const data = await response.json();
+        const user = data["data"]["user"];
         localStorage.setItem('em-user', JSON.stringify(user));
         return true;
     } catch (error) {
@@ -77,4 +88,4 @@ async function signUpUser(username, email, password) {
     }
 }
 
-export { getCurrentUser, loginUser, logoutUser, signUpUser }
+export { isLoggedIn, getCurrentUser, loginUser, logoutUser, signUpUser }
