@@ -79,6 +79,10 @@ Below are team-identified core features, expressed as a preliminary list of API 
 
 ### Home Page
 
+![image](https://github.com/user-attachments/assets/5f3f6275-22d9-4558-832d-001d9c82a05e)
+
+![image](https://github.com/user-attachments/assets/ce0bffe7-6732-47e5-8b6b-deaaa030ecf1)
+
 **Purpose**: Main dashboard where users can view tasks and access other parts of the app.
 
 **Function**: Users can add new tasks. Clicking an existing task opens a modal to allow task edits.
@@ -93,6 +97,8 @@ Below are team-identified core features, expressed as a preliminary list of API 
 
 ### Uncategorized Task List
 
+![image](https://github.com/user-attachments/assets/35e9f067-1ac7-48db-9414-c56e0a467a8e)
+
 **Purpose**: Allows users to view and categorize all tasks
 
 **Function**: Clicking the task creation button opens the Task Form. Clicking on an existing task opens a modal to allow task edits.
@@ -106,6 +112,8 @@ Below are team-identified core features, expressed as a preliminary list of API 
 ---
 
 ### Categorized Task List
+
+![image](https://github.com/user-attachments/assets/76282d2e-e8c7-45f3-901a-6488a3e81d02)
 
 **Purpose**: Allows users to view all categorized tasks and mark them complete.
 
@@ -166,11 +174,29 @@ Below are team-identified core features, expressed as a preliminary list of API 
    pip install -r requirements.txt # install docs requirements
    ```
 
-3. Build/view the technical docs
+3. Start the back-end api server
+
+   ```
+   export DATABASE_URL="mongodb-url" # specify the location of your mongodb server
+   npm run backend    # start the mongodb server
+   ```
+
+4. Start the front-end dev server
+   ```
+   npm run dev       # start the local dev server at http://localhost:5173/
+   ```
+5. Run the unit tests
+
+   ```
+   npm run test:unit  # starts the unit tests, must have the backend running
+   ```
+
+6. Build/view the technical docs
 
    ```
    cd docs             # cd into docs dir
    make html           # make the html files from source
+   make pdf            # generate pdfs for user guide
 
    # open docs/build/html/index.html using live server to view
    ```

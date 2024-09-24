@@ -1,29 +1,27 @@
-const express = require('express')
-const userController = require('../controllers/userController')
+import express from 'express'
+import { userController } from '../controllers/userController.js'
 
-const router = express.Router()
+export const userRoutes = express.Router()
 
 // Task Endpoints
 
 // Endpoint to handle user signup
-router.post('/signup', userController.signUp)
+userRoutes.post('/signup', userController.signUp)
 
 // Endpoint to handle user login
-router.post('/login', userController.logIn)
+userRoutes.post('/login', userController.logIn)
 
 // Endpoint to get user details by ID
-router.get('/:id', userController.getUserById)
+userRoutes.get('/:id', userController.getUserById)
 
 // Endpoint to update user details by ID
-router.put('/:id', userController.updateUserById)
+userRoutes.put('/:id', userController.updateUserById)
 
 // Endpoint to delete user by ID
-router.delete('/:id', userController.deleteUserById)
+userRoutes.delete('/:id', userController.deleteUserById)
 
 //get all tasks by user
-router.get('/:id/tasks', userController.getAllTasksByUser)
+userRoutes.get('/:id/tasks', userController.getAllTasksByUser)
 
 // getOwnedTaskByCategory
-router.get('/:id/tasks/:category', userController.getAllTasksByCategory)
-
-module.exports = router
+userRoutes.get('/:id/tasks/:category', userController.getAllTasksByCategory)

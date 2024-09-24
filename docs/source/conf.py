@@ -14,7 +14,24 @@ release = '1.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [
+    'rst2pdf.pdfbuilder',
+    'sphinx_js'
+    ]
+
+js_source_path = '../../'
+
+primary_domain = 'js'
+# rst2pdf options
+pdf_documents = [
+    ('index', 'Eisenhower Method', 'Eisenhower Method', 'Megann\\Muhammad\\Richard\\Yisroel\\Zak'),
+]
+
+
+# A comma-separated list of custom stylesheets. Example:
+pdf_stylesheets = ['furo.css.map']
+# A list of folders to search for stylesheets. Example:
+pdf_style_path = ['source/_static/styles']
 
 templates_path = ['_templates']
 exclude_patterns = []
@@ -24,7 +41,7 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'shibuya'
+html_theme = 'furo'
 html_static_path = ['_static']
 
 # -- Display Github repo info -------------------------------------------------
