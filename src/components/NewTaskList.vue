@@ -1,7 +1,7 @@
 <template>
     <div class="card bg-primary-subtle" :class="pageView ? '' : 'tall-card-max'">
         <div class="card-header bg-primary text-light" v-if="!pageView">
-            <a class="d-flex justify-content-between align-items-center text-light text-decoration-none" href="/inbox">
+            <a class="d-flex justify-content-between align-items-center text-light text-decoration-none" href="#" @click="() => rtr.push('/inbox')">
                 <h3 class="card-title m-0">Inbox</h3>
                 <i class="bi bi-envelope-open-fill fs-3 text-light"></i>
             </a>
@@ -47,7 +47,9 @@
     import { ref, onMounted, onUnmounted } from 'vue'
     import TaskModal from './TaskModal.vue';
     import { getLocalTasks, saveLocalTask, deleteLocalTask } from '@/methods/tasks';
+    import { useRouter } from 'vue-router'
 
+    const rtr = useRouter();
     const props = defineProps({
         pageView: Boolean
     })

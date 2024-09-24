@@ -2,11 +2,10 @@
     <main class="container mt-1">
         <div class="row">
             <div class="col-10 m-auto">
-                <a class="mt-3 p-3 bg-secondary text-white rounded-start rounded-end d-flex justify-content-between align-items-center text-decoration-none"
-                    href="/tasks">
+                <div class="mt-3 p-3 bg-secondary text-white rounded-start rounded-end d-flex justify-content-between align-items-center text-decoration-none">
                     <h3 class="m-0">Categorized Tasks</h3>
                     <i class="bi bi-list-task fs-3 text-light"></i>
-                </a>
+                </div>
             </div>
         </div>
         <div class="row">
