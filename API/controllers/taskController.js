@@ -4,7 +4,7 @@ import { Task } from '../models/taskModel.js'
  * @function taskController
  */
 export const taskController = {
-  // Get all tasks
+  // Get all tasks DEVELOPMENT ONLY
   getAllTasks: async (req, res) => {
     try {
       const tasks = await Task.find()
