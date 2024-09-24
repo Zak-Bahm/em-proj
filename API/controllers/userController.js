@@ -1,20 +1,35 @@
 const User = require('../models/userModel')
+const bcrypt = require('bcryptjs')
 
 //Sign up user
 exports.signUp = async (req, res) => {
   try {
     const { username, email, password } = req.body
-    //Check if username, email, and password are provided
+    // Check if username, email, and password are provided
     if (!username || !email || !password) {
       return res.status(400).json({
         status: 'fail',
         message: 'Please provide username, email, and password'
       })
     }
-    //Create new user
-    const newUser = await User.create({ username, email, password })
 
-    //Returns response if user is created successfully
+    // Check if user already exists
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] })
+    if (existingUser) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'User already exists'
+      })
+    }
+
+    // Hash the password
+    const saltRounds = 12
+    const hashedPassword = await bcrypt.hash(password, saltRounds)
+
+    // Create new user with hashed password
+    const newUser = await User.create({ username, email, password: hashedPassword })
+
+    // Returns response if user is created successfully
     res.status(201).json({
       status: 'success',
       data: {
@@ -34,7 +49,7 @@ exports.logIn = async (req, res) => {
   try {
     //This will handle login functionality. Functionality not complete
 
-    const { email, password } = req.body
+    const { email, username, password } = req.body
 
     if (!email || !password) {
       return res.status(400).json({
@@ -43,17 +58,25 @@ exports.logIn = async (req, res) => {
       })
     }
 
-    const user = await User.findOne({ email }).select('+password')
-
-    if (!user || !(await user.correctPassword(password, user.password))) {
-      return res.status(401).json({
+    const user = await User.findOne({ $or: [{ email }, { username }] }).select('+password')
+    if (!user) {
+      return res.status(404).json({
         status: 'fail',
-        message: 'Incorrect email or password'
+        message: 'User not found'
       })
     }
 
+    const isCorrectPassword = await bcrypt.compare(password, user.password)
+    if (!isCorrectPassword) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Incorrect username or password'
+      })
+    }
+
+    user.password = undefined
     res.status(200).json({
-      status: 'success',
+      status: 'login success',
       data: {
         user
       }
