@@ -34,7 +34,11 @@ export const userController = {
       res.status(201).json({
         status: 'success',
         data: {
-          user: newUser
+          user: {
+            '_id': newUser['_id'],
+            username: newUser['username'],
+            email: newUser['email']
+          }
         }
       })
     } catch (err) {
@@ -117,8 +121,8 @@ export const userController = {
   updateUserById: async (req, res) => {
     try {
       const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,  
-        runValidators: true,  
+        new: true,
+        runValidators: true,
       });
 
       if (!user) {
@@ -131,7 +135,7 @@ export const userController = {
       res.status(200).json({
         status: 'success',
         data: {
-          updatedUser: user  
+          updatedUser: user
         }
       });
     } catch (err) {
@@ -192,9 +196,9 @@ export const userController = {
   //Get all tasks by category
   getAllTasksByCategory: async (req, res) => {
     try {
-      const { userId, category } = req.params
+      const { id, category } = req.params
       //Find user by id and then populate tasks with the category passed in the parameters
-      const user = await User.findById(userId).populate({
+      const user = await User.findById(id).populate({
         path: 'tasks',
         match: { category }
       })

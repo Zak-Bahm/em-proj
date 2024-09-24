@@ -29,7 +29,8 @@ const userSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }]
 })
 
 export const User = mongoose.model('User', userSchema)

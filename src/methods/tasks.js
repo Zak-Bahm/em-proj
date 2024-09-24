@@ -1,4 +1,69 @@
-function getLocalTasks(category = '') {
+import { getCurrentUser, isLoggedIn } from "./users";
+
+async function getRemoteTasks(category = 'None') {
+    // ensure we are logged in
+    if (!isLoggedIn()) return []
+
+    // get id and assemble url
+    const userId = getCurrentUser(true)
+    const url = import.meta.env.VITE_API_URL + '/users/' + userId + '/tasks/' + category;
+
+    // fetch tasks
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        console.log(data)
+        const tasks = data["data"]["tasks"];
+        return tasks;
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        return [];
+    }
+}
+
+async function saveRemoteTask(task) {
+    // ensure we are logged in
+    if (!isLoggedIn()) return false
+
+    // get user id
+    task.userId = getCurrentUser(true);
+
+    // assemble url and update id if updating task
+    let url = import.meta.env.VITE_API_URL + '/tasks'
+    const isNew = typeof task.id == 'undefined';
+    if (!isNew) {
+        task['_id'] = task.id
+        url += '/' + task.id
+    }
+
+    // assemble url and update
+    try {
+        const response = await fetch(url, {
+            method: isNew ? 'POST': 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(task)
+        });
+
+        if (!response.ok) {
+            return false;
+        }
+
+        const data = await response.json();
+        return true;
+    } catch (error) {
+        console.error('Error updating task:', error);
+        return false;
+    }
+}
+
+function getLocalTasks(category = 'None') {
     const tasks = [];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -8,7 +73,7 @@ function getLocalTasks(category = '') {
                 const task = JSON.parse(taskJSON);
                 if (category === '') {
                     tasks.push(task);
-                } else if (category === 'none' && !task.category) {
+                } else if (category === 'None' && !task.category) {
                     tasks.push(task);
                 } else if (task.category === category) {
                     tasks.push(task);
@@ -28,8 +93,10 @@ function saveLocalTask(task) {
     if (task && task.id) {
         const taskJSON = JSON.stringify(task);
         localStorage.setItem(`task-${task.id}`, taskJSON);
+        return true;
     } else {
         console.error("Task object is invalid or missing an id.");
+        return false;
     }
 }
 function deleteLocalTask(task) {
@@ -40,4 +107,4 @@ function deleteLocalTask(task) {
     }
 }
 
-export { getLocalTasks, saveLocalTask, deleteLocalTask }
+export { getRemoteTasks, saveRemoteTask, getLocalTasks, saveLocalTask, deleteLocalTask }

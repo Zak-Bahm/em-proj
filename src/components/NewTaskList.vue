@@ -8,7 +8,7 @@
 
             <div class="input-group mt-3">
                 <input type="text" v-model="newTitle" class="form-control" placeholder="New Task Title" aria-label="New Task Title" aria-describedby="button-addon2">
-                <button class="btn btn-outline-info" type="button" id="button-addon2" @click="addTask">
+                <button class="btn btn-outline-info" type="button" id="button-addon2" @click="async () => { await addTask() }">
                     <i class="bi bi-plus-square-fill fs-5 text-light"></i>
                 </button>
             </div>
@@ -46,9 +46,10 @@
 <script setup>
     import { ref, onMounted, onUnmounted } from 'vue'
     import TaskModal from './TaskModal.vue';
-    import { getLocalTasks, saveLocalTask, deleteLocalTask } from '@/methods/tasks';
+    import { getLocalTasks, getRemoteTasks, saveLocalTask, saveRemoteTask, deleteLocalTask } from '@/methods/tasks';
     import { useRouter } from 'vue-router'
 
+    const lcl = import.meta.env.VITE_LOCAL_ONLY === "true"
     const rtr = useRouter();
     const props = defineProps({
         pageView: Boolean
@@ -58,8 +59,8 @@
     const tasks = ref([])
     const targetTask = ref({})
 
-    onMounted(() => {
-        fetchTasks();
+    onMounted(async () => {
+        await fetchTasks();
 
         // Add event listener to all modals
         const modalElements = document.querySelectorAll('.modal');
@@ -76,23 +77,25 @@
         });
     });
 
-    function fetchTasks() {
-        const newTasks = getLocalTasks('none');
+    async function fetchTasks() {
+        const newTasks = lcl ? getLocalTasks('None') : await getRemoteTasks('None');
         tasks.value = newTasks;
     }
-    function addTask() {
+    async function addTask() {
         if (newTitle.value == '') return;
 
         const newTask = {
-            id: Date.now(),
             createdAt: Date.now(),
             updatedAt: Date.now(),
             title: newTitle.value,
             description: '',
-            category: ''
+            category: 'None'
         }
+        if (lcl) newTask.id = createdAt;
 
-        saveLocalTask(newTask);
+        const saved = lcl ? saveLocalTask(newTask) : await saveRemoteTask(newTask);
+        if (!saved) return alert('Unable to save task');
+
         tasks.value.unshift(newTask)
         newTitle.value = ''
     }
