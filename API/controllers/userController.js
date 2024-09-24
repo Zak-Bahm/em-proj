@@ -112,34 +112,36 @@ export const userController = {
       })
     }
   },
-  //Update user by id INCOMPLETE
+
+  //Update user by id
   updateUserById: async (req, res) => {
     try {
-      //find users and update. Functionality not complete
-      const user = await User.findByIdAndUpdate(req.params.id, req.body)
+      const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,  
+        runValidators: true,  
+      });
+
       if (!user) {
         return res.status(404).json({
           status: 'fail',
           message: 'User not found'
-        })
+        });
       }
-
-      //Send find updated user
-      const updatedUser = await User.findById(req.params.id)
 
       res.status(200).json({
         status: 'success',
         data: {
-          updatedUser
+          updatedUser: user  
         }
-      })
+      });
     } catch (err) {
       res.status(400).json({
         status: 'fail',
         message: err.message
-      })
+      });
     }
   },
+
   //Delete user by id
   deleteUserById: async (req, res) => {
     try {

@@ -116,9 +116,6 @@ describe('Task Routes', () => {
 
     const res = await request(app).put(`/api/tasks/${taskId}`).send({ title: 'Updated Task' })
 
-    console.log('Response status:', res.statusCode)
-    console.log('Response body:', res.body)
-
     expect(res.statusCode).toBe(200)
     expect(res.body.status).toBe('success')
     expect(res.body.data.task.title).toBe('Updated Task')
@@ -136,4 +133,25 @@ describe('Task Routes', () => {
     expect(res.body.status).toBe('fail')
     expect(res.body.message).toBe('Task not found')
   })
+
+  // Add a new test for task categorization:
+  it('should categorize a task', async () => {
+    const taskId = '1234567890abcdef12345678';
+    const updatedTask = {
+      _id: taskId,
+      title: 'Test Task',
+      category: 'Urgent + Important',
+      save: vi.fn().mockResolvedValue({ _id: taskId, title: 'Test Task', category: 'Urgent + Important' }) // Mock the save method
+    };
+
+    vi.spyOn(Task, 'findById').mockResolvedValue(updatedTask);
+    vi.spyOn(Task.prototype, 'save').mockResolvedValue(updatedTask);
+
+    const res = await request(app).put(`/api/tasks/${taskId}`).send({ category: 'Urgent + Important' });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data.task.category).toBe('Urgent + Important');
+  });
+
 })
+
