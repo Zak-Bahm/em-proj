@@ -1,7 +1,7 @@
 <script setup>
     import { useRouter, RouterView } from 'vue-router'
     import { ref, onMounted, onUnmounted } from 'vue'
-    import { getCurrentUser  } from './methods/users';
+    import { getCurrentUser, logoutUser  } from './methods/users';
 
     const router = useRouter();
     const isLoggedIn = ref(false)
@@ -32,6 +32,9 @@
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#" @click="() => router.push('/')">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#" @click="logoutUser">Logout</a>
                     </li>
                 </ul>
             </div>

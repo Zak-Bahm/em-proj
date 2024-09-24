@@ -3,7 +3,7 @@
         <div class="card bg-primary-subtle tall-card-max">
             <div class="card-header bg-primary text-light">
                 <div class="d-flex justify-content-between align-items-center text-light text-decoration-none">
-                    <h3 class="card-title m-0">Login to EM</h3>
+                    <h3 class="card-title m-0">Sign Up for EM</h3>
                 </div>
             </div>
 
@@ -13,16 +13,20 @@
                 </div>
                 <form>
                     <div class="mb-3">
-                        <label for="loginEmail" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="loginEmail" aria-describedby="emailHelp" v-model="email">
+                        <label for="signUpName" class="form-label">Name</label>
+                        <input type="input" class="form-control" id="signUpName" v-model="name">
                     </div>
                     <div class="mb-3">
-                        <label for="loginPassword" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="loginPassword" v-model="password">
+                        <label for="signUpEmail" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="signUpEmail" aria-describedby="emailHelp" v-model="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="signUpPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="signUpPassword" v-model="password">
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
-                        <button type="button" class="btn btn-primary" @click="async () => { await loginAction() }">Login</button>
-                        <button type="button" class="btn btn-secondary" @click="() => rtr.push('/signup')">Go to Sign Up</button>
+                        <button type="button" class="btn btn-primary" @click="async () => { await signUpAction() }">Sign Up</button>
+                        <button type="button" class="btn btn-secondary" @click="() => rtr.push('/login')">Go to Login</button>
                     </div>
                 </form>
             </div>
@@ -35,12 +39,13 @@
 <script setup>
     import { useRouter } from 'vue-router'
     import { ref, onMounted, onUnmounted } from 'vue'
-    import { getCurrentUser, loginUser } from '../methods/users';
+    import { getCurrentUser, signUpUser } from '../methods/users';
 
     const colorOptions = ['danger', 'warning', 'info', 'dark']
     const rtr = useRouter();
 
     const errorMsg = ref("")
+    const name = defineModel("name")
     const email = defineModel("email")
     const password = defineModel("password")
 
@@ -54,13 +59,13 @@
         if (user !== false) return window.location = '/'
     }
 
-    async function loginAction() {
-        const isLoggedIn = await loginUser(email.value, password.value)
+    async function signUpAction() {
+        const isSignedUp = await signUpUser(name.value, email.value, password.value)
 
-        if (isLoggedIn) {
+        if (isSignedUp) {
             return window.location = '/'
         } else {
-            errorMsg.value = "Unable to log in. Please check your email and password."
+            errorMsg.value = "Unable to sign up."
         }
     }
 </script>

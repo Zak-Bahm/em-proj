@@ -42,4 +42,39 @@ async function loginUser(email, password) {
     }
 }
 
-export { getCurrentUser, loginUser }
+function logoutUser() {
+    localStorage.removeItem('em-user');
+    return window.location = '/'
+}
+
+async function signUpUser(username, email, password) {
+    // return if no name, email, or pw
+    if (!username || !email || !password) return false;
+
+    // make request
+    const url = import.meta.env.VITE_API_URL + '/users/signup';
+    const body = { username, email, password };
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            return false;
+        }
+
+        const user = await response.json();
+        localStorage.setItem('em-user', JSON.stringify(user));
+        return true;
+    } catch (error) {
+        console.error('Error signing up:', error);
+        return false;
+    }
+}
+
+export { getCurrentUser, loginUser, logoutUser, signUpUser }
