@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const taskSchema = new mongoose.Schema({
   userId: {
@@ -52,6 +52,4 @@ taskSchema.pre('save', function (next) {
 })
 
 // Check if the model has already been compiled
-const Task = mongoose.models.Task || mongoose.model('Task', taskSchema);
-
-module.exports = Task
+export const Task = mongoose.models.Task || mongoose.model('Task', taskSchema)
