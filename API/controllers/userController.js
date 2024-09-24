@@ -1,4 +1,5 @@
 import { User } from '../models/userModel.js'
+import bcrypt from 'bcryptjs'
 
 export const userController = {
   //Sign up user
@@ -12,10 +13,24 @@ export const userController = {
           message: 'Please provide username, email, and password'
         })
       }
-      //Create new user
-      const newUser = await User.create({ username, email, password })
 
-      //Returns response if user is created successfully
+      // Check if user already exists
+      const existingUser = await User.findOne({ $or: [{ email }, { username }] })
+      if (existingUser) {
+        return res.status(400).json({
+            status: 'fail',
+            message: 'User already exists'
+        })
+      }
+
+      // Hash the password
+      const saltRounds = 12
+      const hashedPassword = await bcrypt.hash(password, saltRounds)
+
+      // Create new user with hashed password
+      const newUser = await User.create({ username, email, password: hashedPassword })
+
+      // Returns response if user is created successfully
       res.status(201).json({
         status: 'success',
         data: {
@@ -33,7 +48,7 @@ export const userController = {
   logIn: async (req, res) => {
     try {
       //This will handle login functionality. Functionality not complete
-      const { email, password } = req.body
+      const { email, username, password } = req.body
 
       if (!email || !password) {
         return res.status(400).json({
@@ -42,17 +57,24 @@ export const userController = {
         })
       }
 
-      const user = await User.findOne({ email }).select('+password')
-
-      if (!user || !(await user.correctPassword(password, user.password))) {
-        return res.status(401).json({
+      const user = await User.findOne({ $or: [{ email }, { username }] }).select('+password')
+      if (!user) {
+        return res.status(404).json({
           status: 'fail',
-          message: 'Incorrect email or password'
+          message: 'User not found'
+        })
+      }
+
+      const isCorrectPassword = await bcrypt.compare(password, user.password)
+      if (!isCorrectPassword) {
+        return res.status(400).json({
+          status: 'fail',
+          message: 'Incorrect username or password'
         })
       }
 
       res.status(200).json({
-        status: 'success',
+        status: 'login success',
         data: {
           user
         }
@@ -90,30 +112,36 @@ export const userController = {
       })
     }
   },
-  //Update user by id INCOMPLETE
+
+  //Update user by id
   updateUserById: async (req, res) => {
     try {
-      //find users and update. Functionality not complete
-      const user = await User.findByIdAndUpdate(req.params, req.body, {})
+      const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,  
+        runValidators: true,  
+      });
+
       if (!user) {
         return res.status(404).json({
           status: 'fail',
           message: 'User not found'
-        })
+        });
       }
+
       res.status(200).json({
         status: 'success',
         data: {
-          user
+          updatedUser: user  
         }
-      })
+      });
     } catch (err) {
       res.status(400).json({
         status: 'fail',
         message: err.message
-      })
+      });
     }
   },
+
   //Delete user by id
   deleteUserById: async (req, res) => {
     try {
