@@ -225,5 +225,35 @@ export const userController = {
         message: err.message
       })
     }
+  },
+  //Get all tasks by date
+  getAllTasksByDate: async (req, res) => {
+    try {
+      const { id, date } = req.params
+      // Find user by id and then populate tasks
+      const user = await User.findById(id)
+
+      if (!user) {
+        return res.status(404).json({
+          status: 'fail',
+          message: 'User not found'
+        })
+      }
+
+      // then fetch the tasks with due dates before specified date
+      const specifiedDate = new Date(date)
+      const tasks = await Task.find({userId: user['_id'], dueDate: { $lt: specifiedDate }})
+      res.status(200).json({
+        status: 'success',
+        data: {
+          tasks
+        }
+      })
+    } catch (err) {
+      res.status(400).json({
+        status: 'fail',
+        message: err.message
+      })
+    }
   }
 }
