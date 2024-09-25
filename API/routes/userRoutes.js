@@ -25,3 +25,6 @@ userRoutes.get('/:id/tasks', userController.getAllTasksByUser)
 
 // getOwnedTaskByCategory
 userRoutes.get('/:id/tasks/:category', userController.getAllTasksByCategory)
+
+// getOwnedTaskByDate
+userRoutes.get('/:id/tasks/:date', userController.getOwnedTaskByDate)

@@ -1,4 +1,5 @@
 import { User } from '../models/userModel.js'
+import { Task } from '../models/taskModel.js'
 import bcrypt from 'bcryptjs'
 
 export const userController = {
@@ -34,7 +35,11 @@ export const userController = {
       res.status(201).json({
         status: 'success',
         data: {
-          user: newUser
+          user: {
+            '_id': newUser['_id'],
+            username: newUser['username'],
+            email: newUser['email']
+          }
         }
       })
     } catch (err) {
@@ -117,8 +122,8 @@ export const userController = {
   updateUserById: async (req, res) => {
     try {
       const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,  
-        runValidators: true,  
+        new: true,
+        runValidators: true,
       });
 
       if (!user) {
@@ -131,7 +136,7 @@ export const userController = {
       res.status(200).json({
         status: 'success',
         data: {
-          updatedUser: user  
+          updatedUser: user
         }
       });
     } catch (err) {
@@ -168,18 +173,21 @@ export const userController = {
   //Get all tasks by user
   getAllTasksByUser: async (req, res) => {
     try {
-      //Search for user by id and populate the tasks
-      const user = await User.findById(req.params.id).populate('tasks')
+      //Search for user by id
+      const user = await User.findById(req.params.id)
       if (!user) {
         return res.status(404).json({
           status: 'fail',
           message: 'User not found'
         })
       }
+
+      // then fetch the tasks
+      const tasks = await Task.find({userId: user['_id']})
       res.status(200).json({
         status: 'success',
         data: {
-          tasks: user.tasks
+          tasks
         }
       })
     } catch (err) {
@@ -192,12 +200,9 @@ export const userController = {
   //Get all tasks by category
   getAllTasksByCategory: async (req, res) => {
     try {
-      const { userId, category } = req.params
-      //Find user by id and then populate tasks with the category passed in the parameters
-      const user = await User.findById(userId).populate({
-        path: 'tasks',
-        match: { category }
-      })
+      const { id, category } = req.params
+      // Find user by id and then populate tasks
+      const user = await User.findById(id)
 
       if (!user) {
         return res.status(404).json({
@@ -206,10 +211,42 @@ export const userController = {
         })
       }
 
+      // then fetch the tasks with the category passed in the parameters
+      const tasks = await Task.find({userId: user['_id'], category})
       res.status(200).json({
         status: 'success',
         data: {
-          tasks: user.tasks
+          tasks
+        }
+      })
+    } catch (err) {
+      res.status(400).json({
+        status: 'fail',
+        message: err.message
+      })
+    }
+  },
+  //Get all tasks by date
+  getAllTasksByDate: async (req, res) => {
+    try {
+      const { id, date } = req.params
+      // Find user by id and then populate tasks
+      const user = await User.findById(id)
+
+      if (!user) {
+        return res.status(404).json({
+          status: 'fail',
+          message: 'User not found'
+        })
+      }
+
+      // then fetch the tasks with due dates before specified date
+      const specifiedDate = new Date(date)
+      const tasks = await Task.find({userId: user['_id'], dueDate: { $lt: specifiedDate }})
+      res.status(200).json({
+        status: 'success',
+        data: {
+          tasks
         }
       })
     } catch (err) {

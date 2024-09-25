@@ -177,8 +177,9 @@ Below are team-identified core features, expressed as a preliminary list of API 
 3. Start the back-end api server
 
    ```
-   export DATABASE_URL="mongodb-url" # specify the location of your mongodb server
-   npm run backend    # start the mongodb server
+   . ./.env # add the .env vars to your path
+   docker compose up -d # start the mongodb server
+   npm run backend    # start the backend
    ```
 
 4. Start the front-end dev server

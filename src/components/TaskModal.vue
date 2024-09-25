@@ -17,6 +17,10 @@
                             <input type="textarea" class="form-control" id="taskDesc" v-model="desc">
                         </div>
                         <div class="mb-3">
+                            <label for="taskDate" class="form-label">Task Due Date</label>
+                            <input type="date" class="form-control" id="taskDate" v-model="due">
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label" for="taskCat">Task Category</label>
                             <select class="form-select" aria-label="Default select example" id="taskCat" v-model="cat">
                                 <option v-for="(opt, index) in catOptions" :key="index" :value="opt"
@@ -32,7 +36,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-primary" @click="saveTask">Save changes</button>
+                        <button type="button" class="btn btn-primary" @click="async (e) => await saveTask(e)">Save changes</button>
                     </form>
                 </div>
             </div>
@@ -41,8 +45,9 @@
 </template>
 
 <script setup>
-    import { saveLocalTask } from '@/methods/tasks';
+    import { saveLocalTask, saveRemoteTask } from '@/methods/tasks';
 
+    const lcl = import.meta.env.VITE_LOCAL_ONLY === "true"
     const catOptions = ['ImportantUrgent', 'ImportantNotUrgent', 'NotImportantUrgent', 'NotImportantNotUrgent'];
     const fullOptions = ['Urgent + Important', 'Not Urgent + Important', 'Urgent + Not Important', 'Not Urgent + Not Important']
     const colorOptions = ['danger', 'warning', 'info', 'dark']
@@ -52,8 +57,8 @@
         targetTask: Object
     })
 
-    const id = defineModel('id');
     const title = defineModel('title');
+    const due = defineModel('due');
     const desc = defineModel('desc');
     const cat = defineModel('cat');
 
@@ -61,17 +66,20 @@
         cat.value = catOptions[ind];
     }
 
-    function saveTask(event) {
-        // save the task data
+    async function saveTask(event) {
+        // save the task data and then merge
         const fullTask = {
-            id: id.value || Date.now(),
+            ...props.targetTask,
             createdAt: props.targetTask.createdAt || Date.now(),
             updatedAt: Date.now(),
+            dueDate: due.value,
             title: title.value,
             description: desc.value,
             category: cat.value
         }
-        saveLocalTask(fullTask);
+
+        const saved = lcl ? saveLocalTask(fullTask) : await saveRemoteTask(fullTask);
+        if (!saved) return alert('Unable to save task');
 
         // hide modal
         const modal = bootstrap.Modal.getInstance(document.getElementById(props.modalId));
