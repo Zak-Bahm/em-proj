@@ -17,4 +17,10 @@
 
 <script setup>
 import SignUpForm from '@/components/SignUpForm.vue';
+import { useRouter } from 'vue-router';
+
+const lcl = import.meta.env.VITE_LOCAL_ONLY === "true"
+const rtr = useRouter();
+
+if (lcl) rtr.push('/');
 </script>

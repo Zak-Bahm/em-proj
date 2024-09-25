@@ -5,6 +5,7 @@
 
     const router = useRouter();
     const userPresent = ref(false)
+    const lcl = ref(import.meta.env.VITE_LOCAL_ONLY === "true")
 
     onMounted(() => {
         checkForUser();
@@ -32,7 +33,7 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#" @click="() => router.push('/')">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li v-if="!lcl" class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#" @click="logoutUser">Logout</a>
                     </li>
                 </ul>

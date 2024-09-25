@@ -18,6 +18,14 @@
 <script setup>
 import { onBeforeMount } from 'vue';
 import { logoutUser } from '@/methods/users';
+import { useRouter } from 'vue-router';
 
-onBeforeMount(() => logoutUser())
+const lcl = import.meta.env.VITE_LOCAL_ONLY === "true"
+const rtr = useRouter();
+
+
+onBeforeMount(() => {
+    if (lcl) return rtr.push('/');
+    logoutUser()
+})
 </script>
