@@ -9,7 +9,7 @@ import cors from 'cors';
 
 config()
 var app = express()
-const port = 3000
+const port = process.env.BACKEND_PORT || 3000
 
 // MongoDB connection
 const dbURI = process.env.DATABASE_URL
