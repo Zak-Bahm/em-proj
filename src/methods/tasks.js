@@ -118,12 +118,13 @@ function getLocalTasks(category = 'None') {
     return tasks;
 }
 function saveLocalTask(task) {
-    if (task && task.id) {
+    if (task) {
+        if (typeof task.id == 'undefined') task.id = task.createAt;
         const taskJSON = JSON.stringify(task);
         localStorage.setItem(`task-${task.id}`, taskJSON);
         return true;
     } else {
-        console.error("Task object is invalid or missing an id.");
+        console.error("Task object is invalid.");
         return false;
     }
 }
