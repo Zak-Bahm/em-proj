@@ -19,6 +19,7 @@ async function getRemoteTasks(category = 'None') {
         const data = await response.json();
         const tasks = data["data"]["tasks"].map(t => {
             t.id = t['_id'];
+            t.dueDate = extractDatePart(t.dueDate || '');
             return t;
         });
         return tasks;
@@ -138,4 +139,10 @@ function deleteLocalTask(task) {
     }
 }
 
-export { getRemoteTasks, saveRemoteTask, deleteRemoteTask, getLocalTasks, saveLocalTask, deleteLocalTask }
+function extractDatePart(dateString) {
+    const regex = /^([^T]+)T/;
+    const match = dateString.match(regex);
+    return match ? match[1] : '';
+}
+
+export { getRemoteTasks, saveRemoteTask, deleteRemoteTask, getLocalTasks, saveLocalTask, deleteLocalTask, extractDatePart }

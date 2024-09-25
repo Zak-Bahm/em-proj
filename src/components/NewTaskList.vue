@@ -45,7 +45,7 @@
             </ul>
         </div>
         <TaskModal modal-id="newTaskListModal" :target-task="targetTask" v-model:title="targetTask.title"
-            v-model:desc="targetTask.description" v-model:cat="targetTask.category" />
+            v-model:desc="targetTask.description" v-model:cat="targetTask.category" v-model:due="targetTask.dueDate"/>
     </div>
 </template>
 

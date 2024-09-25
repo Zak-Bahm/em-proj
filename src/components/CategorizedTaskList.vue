@@ -36,14 +36,14 @@
             </ul>
         </div>
         <TaskModal :modal-id="`${category}TaskListModal`" :target-task="targetTask" v-model:title="targetTask.title"
-            v-model:desc="targetTask.description" v-model:cat="targetTask.category" />
+            v-model:desc="targetTask.description" v-model:cat="targetTask.category" v-model:due="targetTask.dueDate"/>
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import TaskModal from './TaskModal.vue';
-import { getLocalTasks, getRemoteTasks, deleteLocalTask, deleteRemoteTask } from '@/methods/tasks';
+import { getLocalTasks, getRemoteTasks, deleteLocalTask, deleteRemoteTask, extractDatePart } from '@/methods/tasks';
 
 const props = defineProps({
     category: String,

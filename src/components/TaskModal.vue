@@ -17,6 +17,10 @@
                             <input type="textarea" class="form-control" id="taskDesc" v-model="desc">
                         </div>
                         <div class="mb-3">
+                            <label for="taskDate" class="form-label">Task Due Date</label>
+                            <input type="date" class="form-control" id="taskDate" v-model="due">
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label" for="taskCat">Task Category</label>
                             <select class="form-select" aria-label="Default select example" id="taskCat" v-model="cat">
                                 <option v-for="(opt, index) in catOptions" :key="index" :value="opt"
@@ -54,6 +58,7 @@
     })
 
     const title = defineModel('title');
+    const due = defineModel('due');
     const desc = defineModel('desc');
     const cat = defineModel('cat');
 
@@ -67,11 +72,11 @@
             ...props.targetTask,
             createdAt: props.targetTask.createdAt || Date.now(),
             updatedAt: Date.now(),
+            dueDate: due.value,
             title: title.value,
             description: desc.value,
             category: cat.value
         }
-        console.log(fullTask)
 
         const saved = lcl ? saveLocalTask(fullTask) : await saveRemoteTask(fullTask);
         if (!saved) return alert('Unable to save task');
