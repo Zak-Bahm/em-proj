@@ -3,7 +3,7 @@
         <div class="card bg-primary-subtle tall-card-max">
             <div class="card-header bg-primary text-light">
                 <div class="d-flex justify-content-between align-items-center text-light text-decoration-none">
-                    <h3 class="card-title m-0">Sign Up for EM</h3>
+                    <h3 class="card-title m-0">Sign Up for Task Prioritization App</h3>
                 </div>
             </div>
 

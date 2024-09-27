@@ -22,7 +22,7 @@
 <template>
     <nav v-if="userPresent" class="navbar navbar-expand-lg bd-navbar sticky-top bg-primary mt-3 rounded-start rounded-end border border-light border-3" data-bs-theme="dark">
         <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1">Eisenhower Matrix</span>
+            <span class="navbar-brand mb-0 h1">Task Prioritization App</span>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
