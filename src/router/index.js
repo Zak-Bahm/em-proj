@@ -5,6 +5,7 @@ import TaskView from '@/views/TaskView.vue'
 import LoginView from '@/views/LoginView.vue'
 import LogoutView from '@/views/LogoutView.vue'
 import SignUpView from '@/views/SignUpView.vue'
+import UpcomingView from '@/views/UpcomingView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
             path: '/tasks',
             name: 'tasks',
             component: TaskView
+        },
+        {
+            path: '/upcoming',
+            name: 'upcoming',
+            component: UpcomingView
         }
     ]
 })

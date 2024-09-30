@@ -33,6 +33,9 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#" @click="() => router.push('/')">Home</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#" @click="() => router.push('/upcoming')">Upcoming</a>
+                    </li>
                     <li v-if="!lcl" class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#" @click="logoutUser">Logout</a>
                     </li>
