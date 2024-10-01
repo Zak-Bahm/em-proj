@@ -24,8 +24,7 @@
                 <CategorizedTaskList category="Not Urgent + Not Important" color-class="dark" page-view/>
             </div>
         </div>
-        <TaskModal modal-id="newTaskListModal" :target-task="targetTask" v-model:title="targetTask.title"
-            v-model:desc="targetTask.description" v-model:cat="targetTask.category" v-model:due="targetTask.dueDate"/>
+        <TaskModal modal-id="newTaskListModal" :target-task="targetTask" />
     </main>
 </template>
 
@@ -38,7 +37,7 @@ const targetTask = ref({})
 
 function createTask() {
     // set proper task value
-    targetTask.value = { createdAt: Date.now(), updatedAt: Date.now(), title: '', description: '', category: 'None' };
+    targetTask.value = { createdAt: Date.now(), updatedAt: Date.now(), title: '', description: '', category: 'None', status: 'pending' };
 
     // load modal
     const modalElement = document.getElementById('newTaskListModal');

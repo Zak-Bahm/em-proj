@@ -1,6 +1,6 @@
 import { getCurrentUser, isLoggedIn } from "./users";
 
-async function getRemoteTasks(category = 'None') {
+async function getRemoteTasks(category = '') {
     // ensure we are logged in
     if (!isLoggedIn()) return []
 
@@ -92,7 +92,7 @@ async function deleteRemoteTask(task) {
     }
 }
 
-function getLocalTasks(category = 'None') {
+function getLocalTasks(category = '') {
     const tasks = [];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);

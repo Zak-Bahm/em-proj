@@ -1,22 +1,17 @@
 <template>
-    <div class="card bg-secondary-subtle">
-        <div class="card-header bg-secondary text-light">
+    <div class="card" :class="`bg-${colorClass}-subtle`">
+        <div class="card-header text-light" :class="`text-bg-${colorClass}`">
             <div class="d-flex justify-content-between align-items-center text-light text-decoration-none">
-                <h3 class="card-title m-0">Upcoming Tasks</h3>
-                <form>
-                    <span>Show up to: </span>
-                    <input type="date" v-model="dueDate"></input>
-                </form>
+                <h3 class="card-title m-0">{{ properStatus }} Tasks</h3>
             </div>
         </div>
 
         <div class="card-body overflow-hidden">
             <ul class="list-group list-group-flush">
-                <li v-for="(task, index) in dueTasks" :key="index"
-                    class="list-group-item bg-secondary-subtle text-secondary-emphasis">
+                <li v-for="(task, index) in statusTasks" :key="index" class="list-group-item"
+                    :class="`bg-${colorClass}-subtle text-${colorClass}-emphasis`">
                     <div class="row">
                         <span class="col-10">
-                            <span class="badge rounded-pill text-bg-dark">{{ task.dueDate }}</span>
                             {{ task.title }}
                         </span>
                         <div class="col-1">
@@ -27,29 +22,35 @@
                         </div>
                     </div>
                 </li>
-                <li v-if="dueTasks.length == 0" class="list-group-item bg-secondary-subtle text-secondary-emphasis">
-                    You have no upcoming tasks. Maybe try selecting another max end date.
+                <li v-if="statusTasks.length == 0" class="list-group-item"
+                    :class="`bg-${colorClass}-subtle text-${colorClass}-emphasis`">
+                    You have no {{ status }} tasks.
                 </li>
             </ul>
         </div>
-        <TaskModal modal-id="upcomingTaskModal" :target-task="targetTask" />
+        <TaskModal :modal-id="status + 'TaskModel'" :target-task="targetTask" />
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import TaskModal from './TaskModal.vue';
-import { getLocalTasks, getRemoteTasks, saveLocalTask, saveRemoteTask, deleteLocalTask, deleteRemoteTask } from '@/methods/tasks';
+import { getLocalTasks, getRemoteTasks, deleteLocalTask, deleteRemoteTask } from '@/methods/tasks';
 
 const lcl = import.meta.env.VITE_LOCAL_ONLY === "true"
+const props = defineProps({
+    status: String,
+    colorClass: String
+})
 
-const dueDate = ref(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
 const tasks = ref([])
 const targetTask = ref({})
 
-const dueTasks = computed(() => {
-    return tasks.value.filter(task => new Date(task.dueDate) < new Date(dueDate.value));
+const statusTasks = computed(() => {
+    return tasks.value.filter(task => task.status === props.status);
 });
+
+const properStatus = props.status.charAt(0).toUpperCase() + props.status.slice(1).toLowerCase()
 
 onMounted(async () => {
     await fetchTasks();
@@ -70,26 +71,8 @@ onUnmounted(() => {
 });
 
 async function fetchTasks() {
-    const newTasks = lcl ? getLocalTasks('None') : await getRemoteTasks('None');
-    tasks.value = newTasks;
-}
-async function addTask() {
-    if (newTitle.value == '') return;
-
-    const newTask = {
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        title: newTitle.value,
-        description: '',
-        category: 'None'
-    }
-    if (lcl) newTask.id = createdAt;
-
-    const saved = lcl ? saveLocalTask(newTask) : await saveRemoteTask(newTask);
-    if (!saved) return alert('Unable to save task');
-
-    tasks.value.unshift(newTask)
-    newTitle.value = ''
+    const newTasks = lcl ? getLocalTasks('') : await getRemoteTasks('');
+    tasks.value = newTasks.filter(t => t.status === props.status);
 }
 function editTask(task) {
     // set proper task value
@@ -97,7 +80,7 @@ function editTask(task) {
     if (typeof task !== 'undefined') targetTask.value = task;
 
     // load modal
-    const modalElement = document.getElementById('upcomingTaskModal');
+    const modalElement = document.getElementById(props.status + "TaskModel");
     const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
     modal.show();
 }
