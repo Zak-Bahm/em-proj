@@ -97,15 +97,16 @@ async function addTask() {
         updatedAt: Date.now(),
         title: newTitle.value,
         description: '',
-        category: 'None'
+        category: 'None',
+        status: 'pending'
     }
     if (lcl) newTask.id = createdAt;
 
     const saved = lcl ? saveLocalTask(newTask) : await saveRemoteTask(newTask);
     if (!saved) return alert('Unable to save task');
 
-    tasks.value.unshift(newTask)
     newTitle.value = ''
+    await fetchTasks();
 }
 function editTask(task) {
     // set proper task value
