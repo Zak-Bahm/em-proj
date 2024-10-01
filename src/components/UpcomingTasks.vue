@@ -15,10 +15,13 @@
                 <li v-for="(task, index) in dueTasks" :key="index"
                     class="list-group-item bg-secondary-subtle text-secondary-emphasis">
                     <div class="row">
-                        <span class="col-10">
+                        <span class="col-8">
                             <span class="badge rounded-pill text-bg-dark">{{ task.dueDate }}</span>
                             {{ task.title }}
                         </span>
+                        <div class="col-2">
+                            <p>{{ task.category }}</p>
+                        </div>
                         <div class="col-1">
                             <i class="bi bi-pencil-square fs-5" @click="editTask(task)"></i>
                         </div>
@@ -71,6 +74,7 @@ onUnmounted(() => {
 
 async function fetchTasks() {
     const newTasks = lcl ? getLocalTasks('', '!completed') : await getRemoteTasks('', '!completed');
+    newTasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
     tasks.value = newTasks;
 }
 function editTask(task) {
