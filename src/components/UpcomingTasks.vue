@@ -1,38 +1,23 @@
 <template>
-    <div class="card bg-primary-subtle" :class="pageView ? '' : 'tall-card-max'">
-        <div class="card-header bg-primary text-light" v-if="!pageView">
-            <a class="d-flex justify-content-between align-items-center text-light text-decoration-none" href="#"
-                @click="() => rtr.push('/inbox')">
-                <h3 class="card-title m-0">Inbox</h3>
-                <i class="bi bi-envelope-open-fill fs-3 text-light"></i>
-            </a>
-
-            <div class="input-group mt-3">
-                <input type="text" v-model="newTitle" class="form-control" placeholder="New Task Title"
-                    aria-label="New Task Title" aria-describedby="button-addon2">
-                <button class="btn btn-outline-info" type="button" id="button-addon2"
-                    @click="async () => { await addTask() }">
-                    <i class="bi bi-plus-square-fill fs-5 text-light"></i>
-                </button>
+    <div class="card bg-secondary-subtle">
+        <div class="card-header bg-secondary text-light">
+            <div class="d-flex justify-content-between align-items-center text-light text-decoration-none">
+                <h3 class="card-title m-0">Upcoming Tasks</h3>
+                <form>
+                    <span>Show up to: </span>
+                    <input type="date" v-model="dueDate"></input>
+                </form>
             </div>
-        </div>
-
-        <div class="card-header bg-primary text-light" v-if="pageView">
-            <a class="d-flex justify-content-between align-items-center text-light text-decoration-none" href="#"
-                @click="editTask()">
-                <h3 class="card-title m-0">Inbox</h3>
-                <i class="bi bi-plus-square-fill fs-3 text-light"></i>
-            </a>
         </div>
 
         <div class="card-body overflow-hidden">
             <ul class="list-group list-group-flush">
-                <li v-for="(task, index) in pageView ? tasks : tasks.slice(0, 17)" :key="index"
-                    class="list-group-item bg-primary-subtle text-primary-emphasis">
+                <li v-for="(task, index) in dueTasks" :key="index"
+                    class="list-group-item bg-secondary-subtle text-secondary-emphasis">
                     <div class="row">
                         <span class="col-10">
+                            <span class="badge rounded-pill text-bg-dark">{{ task.dueDate }}</span>
                             {{ task.title }}
-                            <span class="badge rounded-pill text-bg-secondary" v-if="pageView">{{ task.status }}</span>
                         </span>
                         <div class="col-1">
                             <i class="bi bi-pencil-square fs-5" @click="editTask(task)"></i>
@@ -42,30 +27,29 @@
                         </div>
                     </div>
                 </li>
-                <li v-if="tasks.length == 0" class="list-group-item bg-primary-subtle text-primary-emphasis">
-                    You have no pending tasks
+                <li v-if="dueTasks.length == 0" class="list-group-item bg-secondary-subtle text-secondary-emphasis">
+                    You have no upcoming tasks. Maybe try selecting another max end date.
                 </li>
             </ul>
         </div>
-        <TaskModal modal-id="newTaskListModal" :target-task="targetTask" />
+        <TaskModal modal-id="upcomingTaskModal" :target-task="targetTask" />
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import TaskModal from './TaskModal.vue';
 import { getLocalTasks, getRemoteTasks, saveLocalTask, saveRemoteTask, deleteLocalTask, deleteRemoteTask } from '@/methods/tasks';
-import { useRouter } from 'vue-router'
 
 const lcl = import.meta.env.VITE_LOCAL_ONLY === "true"
-const rtr = useRouter();
-const props = defineProps({
-    pageView: Boolean
-})
 
-const newTitle = defineModel({ type: String })
+const dueDate = ref(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
 const tasks = ref([])
 const targetTask = ref({})
+
+const dueTasks = computed(() => {
+    return tasks.value.filter(task => new Date(task.dueDate) < new Date(dueDate.value));
+});
 
 onMounted(async () => {
     await fetchTasks();
@@ -86,7 +70,7 @@ onUnmounted(() => {
 });
 
 async function fetchTasks() {
-    const newTasks = lcl ? getLocalTasks('None', '!completed') : await getRemoteTasks('None', '!completed');
+    const newTasks = lcl ? getLocalTasks('None') : await getRemoteTasks('None');
     tasks.value = newTasks;
 }
 async function addTask() {
@@ -113,7 +97,7 @@ function editTask(task) {
     if (typeof task !== 'undefined') targetTask.value = task;
 
     // load modal
-    const modalElement = document.getElementById('newTaskListModal');
+    const modalElement = document.getElementById('upcomingTaskModal');
     const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
     modal.show();
 }

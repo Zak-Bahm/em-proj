@@ -1,69 +1,52 @@
 <template>
-    <div class="card short-card-max" :class="`bg-${colorClass}-subtle`">
+    <div class="card" :class="`bg-${colorClass}-subtle`">
         <div class="card-header text-light" :class="`text-bg-${colorClass}`">
-            <h3 class="card-title m-0">{{ category }}</h3>
+            <div class="d-flex justify-content-between align-items-center text-light text-decoration-none">
+                <h3 class="card-title m-0">{{ properStatus }} Tasks</h3>
+            </div>
         </div>
+
         <div class="card-body overflow-hidden">
             <ul class="list-group list-group-flush">
-                <li v-for="(task, index) in tasks.slice(0, 7)" :key="index" class="list-group-item"
+                <li v-for="(task, index) in tasks" :key="index" class="list-group-item"
                     :class="`bg-${colorClass}-subtle text-${colorClass}-emphasis`">
-                    <div v-if="!pageView" class="row">
-                        <span class="col-10">{{ task.title }}</span>
+                    <div class="row">
+                        <span class="col-10">
+                            {{ task.title }}
+                        </span>
                         <div class="col-1">
                             <i class="bi bi-pencil-square fs-5" @click="editTask(task)"></i>
                         </div>
                         <div class="col-1">
-                            <i class="bi bi-trash-fill fs-5" @click="deleteTask(index)"></i>
-                        </div>
-                    </div>
-                    <div v-if="pageView" class="row">
-                        <div class="col-10">
-                            <h5>
-                                {{ task.title }}
-                                <span class="badge rounded-pill text-bg-secondary">{{ task.status }}</span>
-                            </h5>
-                            <p>{{ task.description }}</p>
-                        </div>
-                        <div class="col-1">
-                            <i class="bi bi-pencil-square fs-3" @click="editTask(task)"></i>
-                        </div>
-                        <div class="col-1">
-                            <i class="bi bi-trash-fill fs-3" @click="deleteTask(index)"></i>
+                            <i class="bi bi-trash-fill fs-5" @click="async () => { await deleteTask(index) }"></i>
                         </div>
                     </div>
                 </li>
                 <li v-if="tasks.length == 0" class="list-group-item"
                     :class="`bg-${colorClass}-subtle text-${colorClass}-emphasis`">
-                    You have no {{ category }} tasks
+                    You have no {{ status }} tasks.
                 </li>
             </ul>
         </div>
-        <TaskModal :modal-id="`${category}TaskListModal`" :target-task="targetTask" />
+        <TaskModal :modal-id="status + 'TaskModel'" :target-task="targetTask" />
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import TaskModal from './TaskModal.vue';
-import { getLocalTasks, getRemoteTasks, deleteLocalTask, deleteRemoteTask, extractDatePart } from '@/methods/tasks';
-
-const props = defineProps({
-    category: String,
-    colorClass: String,
-    pageView: Boolean
-})
+import { getLocalTasks, getRemoteTasks, deleteLocalTask, deleteRemoteTask } from '@/methods/tasks';
 
 const lcl = import.meta.env.VITE_LOCAL_ONLY === "true"
-const catOptions = {
-    'Urgent + Important': 'ImportantUrgent',
-    'Not Urgent + Important': 'ImportantNotUrgent',
-    'Urgent + Not Important': 'NotImportantUrgent',
-    'Not Urgent + Not Important': 'NotImportantNotUrgent'
-};
-const currentOpt = catOptions[props.category];
+const props = defineProps({
+    status: String,
+    colorClass: String
+})
 
 const tasks = ref([])
 const targetTask = ref({})
+
+const properStatus = props.status.charAt(0).toUpperCase() + props.status.slice(1).toLowerCase()
 
 onMounted(async () => {
     await fetchTasks();
@@ -84,8 +67,8 @@ onUnmounted(() => {
 });
 
 async function fetchTasks() {
-    const newTasks = lcl ? getLocalTasks(currentOpt, '!completed') : await getRemoteTasks(currentOpt, '!completed');
-    tasks.value = newTasks;
+    const newTasks = lcl ? getLocalTasks('', props.status) : await getRemoteTasks('', props.status);
+    tasks.value = newTasks.filter(t => t.status === props.status);
 }
 function editTask(task) {
     // set proper task value
@@ -93,7 +76,7 @@ function editTask(task) {
     if (typeof task !== 'undefined') targetTask.value = task;
 
     // load modal
-    const modalElement = document.getElementById(`${props.category}TaskListModal`);
+    const modalElement = document.getElementById(props.status + "TaskModel");
     const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
     modal.show();
 }

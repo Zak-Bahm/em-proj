@@ -21,15 +21,24 @@
                             <input type="date" class="form-control" id="taskDate" v-model="due">
                         </div>
                         <div class="mb-3">
+                            <label class="form-label" for="taskStat">Task Status</label>
+                            <select class="form-select" aria-label="Default select example" id="taskStat" v-model="stat">
+                                <option v-for="(opt, index) in statOptions" :key="index" :value="opt"
+                                    :selected="stat == opt ? 'true' : 'false'">
+                                    {{ fullStatOptions[index] }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label" for="taskCat">Task Category</label>
                             <select class="form-select" aria-label="Default select example" id="taskCat" v-model="cat">
                                 <option v-for="(opt, index) in catOptions" :key="index" :value="opt"
                                     :selected="cat == opt ? 'true' : 'false'">
-                                    {{ fullOptions[index] }}
+                                    {{ fullCatOptions[index] }}
                                 </option>
                             </select>
                             <div class="row mt-3">
-                                <div class="col-6" v-for="(label, index) in fullOptions" :key="index" >
+                                <div class="col-6" v-for="(label, index) in fullCatOptions" :key="index" >
                                     <div class="alert" :class="`alert-${colorOptions[index]}`" role="alert" @click="() => setCategory(index)">
                                         {{ label }}
                                     </div>
@@ -46,11 +55,14 @@
 
 <script setup>
     import { saveLocalTask, saveRemoteTask } from '@/methods/tasks';
+    import { defineProps, defineModel, watch } from 'vue';
 
     const lcl = import.meta.env.VITE_LOCAL_ONLY === "true"
     const catOptions = ['ImportantUrgent', 'ImportantNotUrgent', 'NotImportantUrgent', 'NotImportantNotUrgent'];
-    const fullOptions = ['Urgent + Important', 'Not Urgent + Important', 'Urgent + Not Important', 'Not Urgent + Not Important']
+    const fullCatOptions = ['Urgent + Important', 'Not Urgent + Important', 'Urgent + Not Important', 'Not Urgent + Not Important']
     const colorOptions = ['danger', 'warning', 'info', 'dark']
+    const statOptions = ['pending', 'in-progress', 'completed'];
+    const fullStatOptions = ['Pending', 'In Progress', 'Completed']
 
     const props = defineProps({
         modalId: String,
@@ -61,6 +73,16 @@
     const due = defineModel('due');
     const desc = defineModel('desc');
     const cat = defineModel('cat');
+    const stat = defineModel('stat');
+
+    // Watch targetTask and update models accordingly
+    watch(() => props.targetTask, (newTask) => {
+        title.value = newTask.title || '';
+        due.value = newTask.dueDate || '';
+        desc.value = newTask.description || '';
+        cat.value = newTask.category || 'None';
+        stat.value = newTask.status || 'pending';
+    }, { immediate: true });
 
     function setCategory(ind) {
         cat.value = catOptions[ind];
@@ -72,6 +94,7 @@
             ...props.targetTask,
             createdAt: props.targetTask.createdAt || Date.now(),
             updatedAt: Date.now(),
+            status: stat.value,
             dueDate: due.value,
             title: title.value,
             description: desc.value,

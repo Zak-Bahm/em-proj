@@ -1,6 +1,6 @@
 import { getCurrentUser, isLoggedIn } from "./users";
 
-async function getRemoteTasks(category = 'None') {
+async function getRemoteTasks(category = '', status = '') {
     // ensure we are logged in
     if (!isLoggedIn()) return []
 
@@ -17,11 +17,25 @@ async function getRemoteTasks(category = 'None') {
         }
 
         const data = await response.json();
-        const tasks = data["data"]["tasks"].map(t => {
+        let tasks = data["data"]["tasks"].map(t => {
             t.id = t['_id'];
             t.dueDate = extractDatePart(t.dueDate || '');
             return t;
         });
+
+        // Sort tasks by updatedAt property
+        tasks.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+        // filter tasks if requested
+        if (status.length > 0) {
+            if (status.startsWith('!')) {
+                const actualStatus = status.slice(1); // Remove the '!' character
+                tasks = tasks.filter(t => t.status !== actualStatus);
+            } else {
+                tasks = tasks.filter(t => t.status === status);
+            }
+        }
+
         return tasks;
     } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -92,8 +106,8 @@ async function deleteRemoteTask(task) {
     }
 }
 
-function getLocalTasks(category = 'None') {
-    const tasks = [];
+function getLocalTasks(category = '', status = '') {
+    let tasks = [];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key.startsWith('task-')) {
@@ -115,6 +129,16 @@ function getLocalTasks(category = 'None') {
 
     // Sort tasks by updatedAt property
     tasks.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+    // filter tasks if requested
+    if (status.length > 0) {
+        if (status.startsWith('!')) {
+            const actualStatus = status.slice(1); // Remove the '!' character
+            tasks = tasks.filter(t => t.status !== actualStatus);
+        } else {
+            tasks = tasks.filter(t => t.status === status);
+        }
+    }
 
     return tasks;
 }
