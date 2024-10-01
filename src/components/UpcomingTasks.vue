@@ -70,26 +70,8 @@ onUnmounted(() => {
 });
 
 async function fetchTasks() {
-    const newTasks = lcl ? getLocalTasks('None') : await getRemoteTasks('None');
+    const newTasks = lcl ? getLocalTasks('', '!completed') : await getRemoteTasks('', '!completed');
     tasks.value = newTasks;
-}
-async function addTask() {
-    if (newTitle.value == '') return;
-
-    const newTask = {
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        title: newTitle.value,
-        description: '',
-        category: 'None'
-    }
-    if (lcl) newTask.id = createdAt;
-
-    const saved = lcl ? saveLocalTask(newTask) : await saveRemoteTask(newTask);
-    if (!saved) return alert('Unable to save task');
-
-    tasks.value.unshift(newTask)
-    newTitle.value = ''
 }
 function editTask(task) {
     // set proper task value
