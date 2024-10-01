@@ -15,12 +15,12 @@
                 <li v-for="(task, index) in dueTasks" :key="index"
                     class="list-group-item bg-secondary-subtle text-secondary-emphasis">
                     <div class="row">
-                        <span class="col-8">
+                        <span class="col-12 col-xl-8">
                             <span class="badge rounded-pill text-bg-dark">{{ task.dueDate }}</span>
                             {{ task.title }}
                         </span>
-                        <div class="col-2">
-                            <p>{{ task.category }}</p>
+                        <div class="col-12 col-xl-2">
+                            <p class="m-0">{{ task.category }}</p>
                         </div>
                         <div class="col-1">
                             <i class="bi bi-pencil-square fs-5" @click="editTask(task)"></i>
