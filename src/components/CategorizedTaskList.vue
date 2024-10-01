@@ -18,7 +18,10 @@
                     </div>
                     <div v-if="pageView" class="row">
                         <div class="col-10">
-                            <h5>{{ task.title }}</h5>
+                            <h5>
+                                {{ task.title }}
+                                <span class="badge rounded-pill text-bg-secondary">{{ task.status }}</span>
+                            </h5>
                             <p>{{ task.description }}</p>
                         </div>
                         <div class="col-1">
@@ -81,7 +84,7 @@ onUnmounted(() => {
 });
 
 async function fetchTasks() {
-    const newTasks = lcl ? getLocalTasks(currentOpt) : await getRemoteTasks(currentOpt);
+    const newTasks = lcl ? getLocalTasks(currentOpt, '!completed') : await getRemoteTasks(currentOpt, '!completed');
     tasks.value = newTasks;
 }
 function editTask(task) {

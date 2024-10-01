@@ -30,7 +30,10 @@
                 <li v-for="(task, index) in pageView ? tasks : tasks.slice(0, 17)" :key="index"
                     class="list-group-item bg-primary-subtle text-primary-emphasis">
                     <div class="row">
-                        <span class="col-10">{{ task.title }}</span>
+                        <span class="col-10">
+                            {{ task.title }}
+                            <span class="badge rounded-pill text-bg-secondary" v-if="pageView">{{ task.status }}</span>
+                        </span>
                         <div class="col-1">
                             <i class="bi bi-pencil-square fs-5" @click="editTask(task)"></i>
                         </div>
@@ -83,7 +86,7 @@ onUnmounted(() => {
 });
 
 async function fetchTasks() {
-    const newTasks = lcl ? getLocalTasks('None') : await getRemoteTasks('None');
+    const newTasks = lcl ? getLocalTasks('None', '!completed') : await getRemoteTasks('None', '!completed');
     tasks.value = newTasks;
 }
 async function addTask() {

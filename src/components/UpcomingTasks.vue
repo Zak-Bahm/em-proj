@@ -114,3 +114,9 @@ async function deleteTask(ind) {
     tasks.value = taskList;
 }
 </script>
+
+<style scoped>
+.bi {
+    cursor: pointer;
+}
+</style>

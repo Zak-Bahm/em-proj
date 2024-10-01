@@ -8,7 +8,7 @@
 
         <div class="card-body overflow-hidden">
             <ul class="list-group list-group-flush">
-                <li v-for="(task, index) in statusTasks" :key="index" class="list-group-item"
+                <li v-for="(task, index) in tasks" :key="index" class="list-group-item"
                     :class="`bg-${colorClass}-subtle text-${colorClass}-emphasis`">
                     <div class="row">
                         <span class="col-10">
@@ -22,7 +22,7 @@
                         </div>
                     </div>
                 </li>
-                <li v-if="statusTasks.length == 0" class="list-group-item"
+                <li v-if="tasks.length == 0" class="list-group-item"
                     :class="`bg-${colorClass}-subtle text-${colorClass}-emphasis`">
                     You have no {{ status }} tasks.
                 </li>
@@ -46,10 +46,6 @@ const props = defineProps({
 const tasks = ref([])
 const targetTask = ref({})
 
-const statusTasks = computed(() => {
-    return tasks.value.filter(task => task.status === props.status);
-});
-
 const properStatus = props.status.charAt(0).toUpperCase() + props.status.slice(1).toLowerCase()
 
 onMounted(async () => {
@@ -71,7 +67,7 @@ onUnmounted(() => {
 });
 
 async function fetchTasks() {
-    const newTasks = lcl ? getLocalTasks('') : await getRemoteTasks('');
+    const newTasks = lcl ? getLocalTasks('', props.status) : await getRemoteTasks('', props.status);
     tasks.value = newTasks.filter(t => t.status === props.status);
 }
 function editTask(task) {
@@ -97,3 +93,9 @@ async function deleteTask(ind) {
     tasks.value = taskList;
 }
 </script>
+
+<style scoped>
+.bi {
+    cursor: pointer;
+}
+</style>
