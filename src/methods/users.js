@@ -44,6 +44,7 @@ async function loginUser(email, password) {
 
         const data = await response.json();
         const user = data["data"]["user"];
+        delete user["password"];
         localStorage.setItem('em-user', JSON.stringify(user));
         return true;
     } catch (error) {

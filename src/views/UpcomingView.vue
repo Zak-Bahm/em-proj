@@ -6,14 +6,14 @@
             </div>
         </div>
 
-        <div class="row mt-3">
-            <div class="col-4">
+        <div class="row">
+            <div class="col-12 col-xl-4 mt-3">
                 <StatusTasks status="pending" color-class="info" />
             </div>
-            <div class="col-4">
+            <div class="col-12 col-xl-4 mt-3">
                 <StatusTasks status="in-progress" color-class="success" />
             </div>
-            <div class="col-4">
+            <div class="col-12 col-xl-4 mt-3">
                 <StatusTasks status="completed" color-class="dark" />
             </div>
         </div>
