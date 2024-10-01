@@ -43,6 +43,14 @@ const taskSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  completedAt: {
+    type: Date,
+    default: null
+  },
+  notified: {
+    type: Boolean,
+    default: false
   }
 })
 
