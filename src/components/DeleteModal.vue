@@ -8,10 +8,18 @@
                 </div>
                 <div class="modal-body">
                     <p>Are you sure you want to delete this task?</p>
+                    <blockquote>
+                        <h5>
+                            {{ targetTask.title }}
+                            <span class="badge rounded-pill text-bg-secondary">{{ targetTask.status }}</span>
+                        </h5>
+                        <p>{{ targetTask.description }}</p>
+                    </blockquote>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" @click="async () => { await deleteTask() }">Delete Task</button>
+                    <button type="button" class="btn btn-danger" @click="async () => { await deleteTask() }">Delete
+                        Task</button>
                 </div>
             </div>
         </div>
