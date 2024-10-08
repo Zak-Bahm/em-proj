@@ -13,7 +13,7 @@
                             <i class="bi bi-pencil-square fs-5" @click="editTask(task)"></i>
                         </div>
                         <div class="col-1">
-                            <i class="bi bi-trash-fill fs-5" @click="deleteTask(index)"></i>
+                            <i class="bi bi-trash-fill fs-5" @click="deleteTask(task)"></i>
                         </div>
                     </div>
                     <div v-if="pageView" class="row">
@@ -28,7 +28,7 @@
                             <i class="bi bi-pencil-square fs-3" @click="editTask(task)"></i>
                         </div>
                         <div class="col-1">
-                            <i class="bi bi-trash-fill fs-3" @click="deleteTask(index)"></i>
+                            <i class="bi bi-trash-fill fs-3" @click="deleteTask(task)"></i>
                         </div>
                     </div>
                 </li>
@@ -38,14 +38,16 @@
                 </li>
             </ul>
         </div>
-        <TaskModal :modal-id="`${category}TaskListModal`" :target-task="targetTask" />
+        <TaskModal :modal-id="`${currentOpt}TaskListModal`" :target-task="targetTask" />
+        <DeleteModal :modal-id="`${currentOpt}TaskListDeleteModal`" :target-task="targetTask" />
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import TaskModal from './TaskModal.vue';
-import { getLocalTasks, getRemoteTasks, deleteLocalTask, deleteRemoteTask, extractDatePart } from '@/methods/tasks';
+import { getLocalTasks, getRemoteTasks } from '@/methods/tasks';
+import DeleteModal from './DeleteModal.vue';
 
 const props = defineProps({
     category: String,
@@ -93,21 +95,19 @@ function editTask(task) {
     if (typeof task !== 'undefined') targetTask.value = task;
 
     // load modal
-    const modalElement = document.getElementById(`${props.category}TaskListModal`);
+    const modalElement = document.getElementById(`${currentOpt}TaskListModal`);
     const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
     modal.show();
 }
-async function deleteTask(ind) {
-    if (typeof ind === 'undefined') return;
+function deleteTask(task) {
+    // set proper task value
+    if (typeof task == 'undefined') return;
+    targetTask.value = task;
 
-    // remove from localstorage then ref
-    const taskList = tasks.value;
-    const task = taskList[ind];
-    const deleted = lcl ? deleteLocalTask(task) : await deleteRemoteTask(task);
-    if (!deleted) return alert('Unable to delete task');
-
-    taskList.splice(ind, 1);
-    tasks.value = taskList;
+    // load modal
+    const modalElement = document.getElementById(`${currentOpt}TaskListDeleteModal`);
+    const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+    modal.show();
 }
 </script>
 
