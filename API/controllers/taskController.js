@@ -201,5 +201,3 @@ const sendNotification = (email, taskTitle, timeLeft) => {
     }
   });
 };
-
-setInterval(taskController.notifyUser, 60000);  // 1min interval
