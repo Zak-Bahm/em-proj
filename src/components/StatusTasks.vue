@@ -18,7 +18,7 @@
                             <i class="bi bi-pencil-square fs-5" @click="editTask(task)"></i>
                         </div>
                         <div class="col-1">
-                            <i class="bi bi-trash-fill fs-5" @click="async () => { await deleteTask(index) }"></i>
+                            <i class="bi bi-trash-fill fs-5" @click="deleteTask(task)"></i>
                         </div>
                     </div>
                 </li>
@@ -29,12 +29,14 @@
             </ul>
         </div>
         <TaskModal :modal-id="status + 'TaskModel'" :target-task="targetTask" />
+        <DeleteModal :modal-id="status + 'DeleteModal'" :target-task="targetTask" />
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import TaskModal from './TaskModal.vue';
+import DeleteModal from './DeleteModal.vue';
 import { getLocalTasks, getRemoteTasks, deleteLocalTask, deleteRemoteTask } from '@/methods/tasks';
 
 const lcl = import.meta.env.VITE_LOCAL_ONLY === "true"
@@ -80,17 +82,15 @@ function editTask(task) {
     const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
     modal.show();
 }
-async function deleteTask(ind) {
-    if (typeof ind === 'undefined') return;
+function deleteTask(task) {
+    // set proper task value
+    if (typeof task == 'undefined') return;
+    targetTask.value = task;
 
-    // remove from localstorage then ref
-    const taskList = tasks.value;
-    const task = taskList[ind];
-    const deleted = lcl ? deleteLocalTask(task) : await deleteRemoteTask(task);
-    if (!deleted) return alert('Unable to delete task');
-
-    taskList.splice(ind, 1);
-    tasks.value = taskList;
+    // load modal
+    const modalElement = document.getElementById(props.status + 'DeleteModal');
+    const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+    modal.show();
 }
 </script>
 
