@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Eisenhower Method'
+project = 'Task Prioritization App'
 copyright = '2024, Megann, Muhammad, Richard, Yisroel, Zak'
 author = 'Megann, Muhammad, Richard, Yisroel, Zak'
 release = '1.0'
@@ -24,7 +24,7 @@ js_source_path = '../../'
 primary_domain = 'js'
 # rst2pdf options
 pdf_documents = [
-    ('index', 'Eisenhower Method', 'Eisenhower Method', 'Megann\\Muhammad\\Richard\\Yisroel\\Zak'),
+    ('index', 'Task Prioritization App', 'Task Prioritization App', 'Megann\\Muhammad\\Richard\\Yisroel\\Zak'),
 ]
 
 
